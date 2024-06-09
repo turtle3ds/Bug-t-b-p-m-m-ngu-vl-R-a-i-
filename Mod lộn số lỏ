@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define MOD 1000000007
+vector<vector<ll>> nhan(const vector<vector<ll>>& A, const vector<vector<ll>>& B) {
+    int m = A.size();
+    int n = B[0].size();
+    int p = B.size();
+    vector<vector<ll>> result(m, vector<ll>(n, 0));
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < n; ++j) {
+            for (int k = 0; k < p; ++k) {
+            	ll x=A[i][k]%MOD,y=B[k][j]%MOD;
+                result[i][j] += (x*y)%MOD;
+                result[i][j]%=MOD;
+            }
+        }
+    }
+
+    return result;
+}
+
+void printMatrix(const vector<vector<ll>>& matrix) {
+    for (const auto& row : matrix) {
+        for (ll element : row) {
+            cout << element << " ";
+        }
+        cout << endl;
+    }
+}
+vector<vector<ll>> matrixPower(const vector<vector<ll>>& matrix, ll power) {
+    if (power == 0) {
+        int n = matrix.size();
+        vector<vector<ll>> identity(n, vector<ll>(n, 0));
+        for (int i = 0; i < n; ++i) {
+            identity[i][i] = 1;
+        }
+        return identity;
+    } else if (power == 1) {
+        return matrix;
+    } else {
+        vector<vector<ll>> temp = matrixPower(matrix, power / 2);
+        if (power % 2 == 0) {
+            return nhan(temp, temp);
+        } else {
+            return nhan(nhan(temp, temp), matrix);
+        }
+    }
+}
+
+int main() {
+    vector<vector<ll>>matrix2;
+    ll a,b,c,d,n;
+	cin >> a>> b>> c>> d;
+	cin>>n;
+	n--;
+	matrix2={{3,2,2,3},
+			 {1,0,0,0},
+			 {0,0,1,2},
+			 {0,0,1,0}};
+    vector<vector<ll>> k1=matrixPower(matrix2,n);
+    ll v1=k1[0][0]*a+k1[0][1]*b+k1[0][2]*c+k1[0][3]*d;
+    v1%=MOD;
+    if (n==-1) cout<<b;
+    else if (n==0) cout<<a;
+    else   cout<<v1;
+}
